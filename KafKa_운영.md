@@ -1,24 +1,34 @@
 
 ### Kafka standalone 설치
 - http://yehongj.tistory.com/m/post/48
+   ```
+   wget https://archive.apache.org/dist/kafka/0.8.1/kafka_2.10-0.8.1.tgz
+   ```
 
-wget https://archive.apache.org/dist/kafka/0.8.1/kafka_2.10-0.8.1.tgz
+- (1) zookeeper 서버 실행
+   ```
+   $> bin/zookeeper-server-start.sh config/zookeeper.properties
+   ```
 
-동작 확인
-(1) zookeeper 서버 실행
-bin/zookeeper-server-start.sh config/zookeeper.properties
+- (2) kafka 서버 실행
+   ```
+   $> bin/kafka-server-start.sh config/server.properties
+   ```
 
-(2) kafka 서버 실행
-bin/kafka-server-start.sh config/server.properties
+- (3) Topic생성
+   ```
+   $> bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test
+   ```
 
-(3) Topic생성
-bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test
+- (4) producer 실행
+   ```
+   $> bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
+   ```
 
-(4) producer 실행
-bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
-
-(5) consumer 실행
-bin/kafka-console-consumer.sh --zookeeper localhost:2181 --topic test --from-beginning
+- (5) consumer 실행
+   ```
+   $> bin/kafka-console-consumer.sh --zookeeper localhost:2181 --topic test --from-beginning
+   ```
 
 ### Kafka 모니터링
 - http://epicdevs.com/22
@@ -51,8 +61,8 @@ bin/kafka-console-consumer.sh --zookeeper localhost:2181 --topic test --from-beg
 - http://tfcloud.blogspot.kr/2013/07/apache-kafka-0.html
 - http://epicdevs.com/20
 
-1:175.126.56.165:9092,2:175.126.56.166:9092 # Logstash 분산으로 설치하는 경우
-175.126.56.165:2181,175.126.56.166:2181 # zookeper 클러스터일때
+- 1:175.126.56.165:9092,2:175.126.56.166:9092 # Logstash 분산으로 설치하는 경우
+- 175.126.56.165:2181,175.126.56.166:2181 # zookeper 클러스터일때
 
 #### zookeeper 서버 실행
 - /tmp/zookeeper/myid :유일한 숫자로지정
@@ -76,44 +86,48 @@ bin/kafka-console-consumer.sh --zookeeper localhost:2181 --topic test --from-beg
 
 #### kafka 서버 실행
 - /config/server.properties
-```
-############################# Server Basics #############################
-broker.id=0
-############################# Socket Server Settings #############################
-port=9092
-host.name=localhost
-socket.request.max.bytes=104857600
+   ```
+   ############################# Server Basics #############################
+   broker.id=0
+   ############################# Socket Server Settings #############################
+   port=9092
+   host.name=localhost
+   socket.request.max.bytes=104857600
 
-############################# Log Basics #############################
-log.dirs=/tmp/kafka-logs      # 로그파일 저장위치 (로그파일이 안 생기거나 기동이 제대로 안되면 확인)
-num.partitions=1
-num.recovery.threads.per.data.dir=1
-############################# Log Flush Policy #############################
+   ############################# Log Basics #############################
+   log.dirs=/tmp/kafka-logs      # 로그파일 저장위치 (로그파일이 안 생기거나 기동이 제대로 안되면 확인)
+   num.partitions=1
+   num.recovery.threads.per.data.dir=1
+   ############################# Log Flush Policy #############################
 
-############################# Log Retention Policy #############################
-log.retention.hours=24              # 메시지의 수명. 수명이 지나면 메시지가 삭제
-log.segment.bytes=1073741824
-log.retention.check.interval.ms=300000
+   ############################# Log Retention Policy #############################
+   log.retention.hours=24              # 메시지의 수명. 수명이 지나면 메시지가 삭제
+   log.segment.bytes=1073741824
+   log.retention.check.interval.ms=300000
 
-############################# Zookeeper #############################
-#zookeeper.connect=localhost:2181  
-zookeeper.connect=175.126.56.165:2181,175.126.56.166:2181/cluster01  # 클러스터구축시
+   ############################# Zookeeper #############################
+   #zookeeper.connect=localhost:2181  
+   zookeeper.connect=175.126.56.165:2181,175.126.56.166:2181/cluster01  # 클러스터구축시
 
-# Timeout in ms for connecting to zookeeper
-zookeeper.connection.timeout.ms=6000
+   # Timeout in ms for connecting to zookeeper
+   zookeeper.connection.timeout.ms=6000
 
-############################ Added  #############################
-auto.create.topics.enable=true
-delete.topic.enable=true
-default.replication.factor=2
-message.max.bytes=1000000
-```
+   ############################ Added  #############################
+   auto.create.topics.enable=true
+   delete.topic.enable=true
+   default.replication.factor=2
+   message.max.bytes=1000000
+   ```
 
-(1) Zookeeper 서버실행
-- bin/zookeeper-server-start.sh config/zookeeper.properties
+- (1) Zookeeper 서버실행
+   ```
+   $> bin/zookeeper-server-start.sh config/zookeeper.properties
+   ```
 
-(2) Kafka 서버실행
-- bin/kafka-server-start.sh config/server.properties
+- (2) Kafka 서버실행
+   ```
+   $> bin/kafka-server-start.sh config/server.properties
+   ```
 
 #### Topic
    ```
